@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 def get_curr_page_info(soup):
     # restaurant_name
     restaurant_name = soup.find("h1", {"class": "header heading masthead masthead_h1"}).getText()
-#     print(restaurant_name) #<-debug
+    print(restaurant_name) #<-debug
 
     # description
     description = soup.find("meta", {"name": "description"})['content']
@@ -152,10 +152,17 @@ if __name__ == "__main__":
     
     info = []
     # for page in pages.find({}).limit(10):
-    for page in pages.find({}):
-        soup = BeautifulSoup(page['html'], features="html.parser")
+    cursor = pages.find({}, no_cursor_timeout=True)
+    loop = 1
+    for i in cursor:
+        print(loop)
+        soup = BeautifulSoup(i['html'], features="html.parser")
         curr_page_info = get_curr_page_info(soup)
         info.append(curr_page_info)
+        loop += 1
+    cursor.close()
+
+    print('Saving...')
         
     info_df = pd.DataFrame(np.array(info),
                     columns=['restaurant_name', 'url', 'description', 'image_url', 'user_names', 
