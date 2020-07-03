@@ -165,8 +165,11 @@ if __name__ == "__main__":
     print('Saving...')
         
     info_df = pd.DataFrame(np.array(info),
-                    columns=['restaurant_name', 'url', 'description', 'image_url', 'user_names', 
-                                'bubble_ratings', 'review_contents'])
+                    columns=['restaurant_name', 'description', 'url', 'top_details', 'about', 'tags', 
+                            'more_details', 'overall_rating', 'food_rating', 'service_rating', 
+                            'value_rating', 'atmosphere_rating', 'num_reviews', 'ranking', 
+                            'address', 'location', 'image_url', 'user_names', 
+                            'bubble_ratings', 'review_contents'])
 
     save_data_file_path = '../data/hon_eats_data.csv'
     info_df.to_csv(save_data_file_path)
