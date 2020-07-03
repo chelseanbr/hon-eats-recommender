@@ -19,12 +19,15 @@ def get_curr_page_info(soup):
     # url
     url = soup.find("link", {"rel": "alternate", "hreflang": "en"})['href']
     
+    
+    # Listing Details
+    
     # overall listing info
     listing_details = soup.find("div", {"id": "taplc_detail_overview_cards_0"})
     
     # top_details
     top_details = soup.find("div", {"id": "taplc_top_info_0"})
-    top_details = top_details.findAll("a", {"class": "restaurants-detail-top-info-TopInfo__tagLink--2LkIo"})
+    top_details = top_details.findAll("a", {"class": "_2mn01bsa"})
     top_details =[top_detail.getText() for top_detail in top_details]
     top_details = ' | '.join(top_details)
 
@@ -33,30 +36,40 @@ def get_curr_page_info(soup):
 
     # about
     try:
-        about = main_details.find("div", {"class": "restaurants-details-card-DesktopView__desktopAboutText--1VvQH"}).getText()
+        about = main_details.find("div", {"class": "_1lSTB9ov"}).getText()
     except AttributeError:
         about = np.nan
-    
+
+    # tag_categories
+    tag_cats = main_details.findAll("div", {"class": "o3o2Iihq"})
+    tag_cats = [tag_cat.getText() for tag_cat in tag_cats]
+    tag_cats = ' | '.join(tag_cats)
     # tags
-    tags = main_details.findAll("div", {"class": "restaurants-details-card-TagCategories__tagText--Yt3iG"})
+    tags = main_details.findAll("div", {"class": "_2170bBgV"})
     tags = [tag.getText() for tag in tags]
     tags = ' | '.join(tags)
     
-    # more_details
+    # more details
     more_details = soup.find("div", {"id": "taplc_detail_overview_cards_0"})
-    more_details = more_details.findAll("div", {"class": "restaurants-detail-overview-cards-DetailsSectionOverviewCard__tagText--1OH6h"})
+    # more_details categories
+    more_details_cats = more_details.findAll("div", {"class": "_14zKtJkz"})
+    more_details_cats = [more_details_cat.getText() for more_details_cat in more_details_cats]
+    more_details_cats = ' | '.join(more_details_cats)
+    # more_details
+    more_details = more_details.findAll("div", {"class": "_1XLfiSsv"})
     more_details = [more_detail.getText() for more_detail in more_details]
     more_details = ' | '.join(more_details)
 
+    
     # overall_rating
     try: 
-        overall_rating = listing_details.find("span", {"class": "restaurants-detail-overview-cards-RatingsOverviewCard__overallRating--nohTl"})
+        overall_rating = listing_details.find("span", {"class": "r2Cf69qf"})
         overall_rating = float(overall_rating.getText()[:3])
     except AttributeError:
         overall_rating = np.nan
-        
+
     # more overall ratings (food, service, value, atmosphere)
-    more_overall_rating_types = listing_details.findAll("span", {"class": "restaurants-detail-overview-cards-RatingsOverviewCard__ratingText--1P1Lq"})
+    more_overall_rating_types = listing_details.findAll("span", {"class": "_2vS3p6SS"})
     more_overall_rating_types = [rating.getText() for rating in more_overall_rating_types]
 
     more_overall_ratings_raw = listing_details.findAll("span", {"class": "ui_bubble_rating"})[1:]
@@ -83,22 +96,23 @@ def get_curr_page_info(soup):
     except KeyError:
         atmosphere_rating = np.nan
         
+        
     # num_reviews
     try: 
-        num_reviews = listing_details.find("a", {"class": "restaurants-detail-overview-cards-RatingsOverviewCard__ratingCount--DFxkG"})
+        num_reviews = listing_details.find("a", {"class": "_10Iv7dOs"})
         num_reviews = int(num_reviews.getText().replace(',', '').split(' ')[0])
     except AttributeError:
         num_reviews = np.nan
-    
+
     # ranking
     try:
-        ranking = listing_details.findAll("div", {"class": "restaurants-detail-overview-cards-RatingsOverviewCard__ranking--17CmN"})
+        ranking = listing_details.findAll("div", {"class": "_3-W4EexF"})
         ranking = ranking[-1].getText()
     except IndexError:
         ranking = np.nan
-        
+
     # location info
-    location_info = listing_details.findAll("span", {"class": "restaurants-detail-overview-cards-LocationOverviewCard__detailLinkText--co3ei"})
+    location_info = listing_details.findAll("span", {"class": "_2saB_OSe"})
 
     # address
     try:
@@ -119,6 +133,9 @@ def get_curr_page_info(soup):
         image_url = image_urls.find("img", {"class": "basicImg"})['data-lazyurl']
     except TypeError:
         image_url = ''
+    
+    
+    # Reviews
 
     # user_names
     user_names = []
@@ -139,9 +156,11 @@ def get_curr_page_info(soup):
     for review in review_contents_raw:
         review_contents.append(review.getText().replace('...More', ''))
 
-    return [restaurant_name, description, url, top_details, about, tags, more_details, 
+    return [restaurant_name, description, url, top_details, about, tag_cats, tags, 
+            more_details_cats, more_details, 
             overall_rating, food_rating, service_rating, value_rating, atmosphere_rating, 
-            num_reviews, ranking, address, location, image_url, user_names, bubble_ratings, review_contents]
+            num_reviews, ranking, address, location, image_url, user_names, bubble_ratings, 
+            review_contents]
 
 if __name__ == "__main__":
     print('Connecting to database...')
@@ -165,8 +184,11 @@ if __name__ == "__main__":
     print('Saving...')
         
     info_df = pd.DataFrame(np.array(info),
-                    columns=['restaurant_name', 'description', 'url', 'top_details', 'about', 'tags', 
-                            'more_details', 'overall_rating', 'food_rating', 'service_rating', 
+                    columns=['restaurant_name', 'description', 'url', 'top_details', 'about', 
+                            'tag_cats', 
+                            'tags', 'more_details_cats', 
+                            'more_details', 'overall_rating', 'food_rating', 
+                            'service_rating', 
                             'value_rating', 'atmosphere_rating', 'num_reviews', 'ranking', 
                             'address', 'location', 'image_url', 'user_names', 
                             'bubble_ratings', 'review_contents'])
