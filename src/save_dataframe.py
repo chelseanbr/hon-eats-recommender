@@ -191,7 +191,8 @@ if __name__ == "__main__":
                             'value_rating', 'atmosphere_rating', 'num_reviews', 'ranking', 
                             'address', 'location', 'image_url', 'review_data'])
 
-    save_data_file_path = '../data/hon_eats_data.csv'
-    info_df.to_csv(save_data_file_path)
+    # Save to JSON
+    save_data_file_path = '../data/hon_eats_data.json'
+    info_df.to_json(save_data_file_path)
 
     print('Saved data to ' + save_data_file_path)
