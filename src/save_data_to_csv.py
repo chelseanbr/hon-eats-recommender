@@ -136,31 +136,30 @@ def get_curr_page_info(soup):
     
     
     # Reviews
-
-    # user_names
-    user_names = []
-    user_names_raw = soup.findAll("div", {"class": "info_text pointer_cursor"})
-    for name in user_names_raw:
-        user_names.append(name.getText())
-
-    # bubble_ratings
-    bubble_ratings = []
-    reviews = soup.find("div", {"class": "listContainer"})
-    bubble_ratings_raw = reviews.findAll("span", {"class": "ui_bubble_rating"})
-    for rating in bubble_ratings_raw:
-        bubble_ratings.append(int(str(rating)[37:39])/10)
-
-    # review_contents
-    review_contents = []
-    review_contents_raw = reviews.findAll("p", {"class": "partial_entry"})
-    for review in review_contents_raw:
-        review_contents.append(review.getText().replace('...More', ''))
+    reviews_container = soup.find("div", {"class": "listContainer"})
+    reviews = reviews_container.findAll("div", {"class": "prw_rup prw_reviews_review_resp"})
+    review_data = []
+    for review in reviews:
+        curr_review = dict()
+        try:
+            curr_review['user_name'] = review.find("div", {"class": "info_text pointer_cursor"}).getText()
+        except AttributeError:
+            curr_review['user_name'] = np.nan
+        bubble_rating_raw = review.find("span", {"class": "ui_bubble_rating"})
+        try:
+            curr_review['bubble_rating'] = int(str(bubble_rating_raw)[37:39])/10
+        except ValueError:
+            curr_review['bubble_rating'] = np.nan
+        try:
+            curr_review['review_contents'] = review.find("p", {"class": "partial_entry"}).getText().replace('...More', '')
+        except AttributeError:
+            curr_review['review_contents'] = np.nan
+        review_data.append(curr_review)
 
     return [restaurant_name, description, url, top_details, about, tag_cats, tags, 
             more_details_cats, more_details, 
             overall_rating, food_rating, service_rating, value_rating, atmosphere_rating, 
-            num_reviews, ranking, address, location, image_url, user_names, bubble_ratings, 
-            review_contents]
+            num_reviews, ranking, address, location, image_url, review_data]
 
 if __name__ == "__main__":
     print('Connecting to database...')
@@ -190,8 +189,7 @@ if __name__ == "__main__":
                             'more_details', 'overall_rating', 'food_rating', 
                             'service_rating', 
                             'value_rating', 'atmosphere_rating', 'num_reviews', 'ranking', 
-                            'address', 'location', 'image_url', 'user_names', 
-                            'bubble_ratings', 'review_contents'])
+                            'address', 'location', 'image_url', 'review_data'])
 
     save_data_file_path = '../data/hon_eats_data.csv'
     info_df.to_csv(save_data_file_path)
