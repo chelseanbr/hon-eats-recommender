@@ -32,7 +32,7 @@
 
 I used <b>BeautifulSoup4</b> and <b>MongoDB (PyMongo)</b> to scrape and store data from <b>Tripadvisor</b> on <b><u>1,805</u> restaurants in Honolulu, Hawai'i</b> on <u>06/25/2020</u>. *This was done overnight with the help of an AWS EC2 instance.* Then, I parsed and converted the <b>unstructured text data (<u>15,903</u> documents)</b> from my MongoDB database into a structured json format (hon_eats_data.json --> [hon_eats_data.zip](/data/hon_eats_data.zip)) for use as a DataFrame with 20 columns (15,903 rows).
 
-#### Flowchart
+#### Pipeline
 ![web_scraping_flowchart](/imgs/web_scraping_flowchart.png)
 
 1. [save_all_page_links.py](/src/save_all_page_links.py) scrapes all pages of <a href='https://www.tripadvisor.com/Restaurants-g60982-Honolulu_Oahu_Hawaii.html'>Tripadvisor Restaurants in Honolulu</a> to save all result links to [csv](/data/all_links.csv).
