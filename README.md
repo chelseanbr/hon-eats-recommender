@@ -5,7 +5,7 @@
 1. [Introduction](#Introduction)
     * [Motivation](#Motivation)
     * [Web Scraping](#Web-Scraping)
-        * [Flowchart](#Flowchart)
+        * [Pipeline](#Pipeline)
 2. [EDA (Exploratory Data Analysis)](#Eda)
 3. [Recommenders](#Recommenders)
     * [Popularity Recommender](#Popularity-Recommender)
@@ -21,7 +21,7 @@
 ## Introduction
 
 ### Motivation
-Aloha! 🌺 I am originally from Honolulu, so I grew up with the cuisines of Hawai'i. 🍽 Now, I am in the SF Bay Area for opportunities in tech & Data Science, but I still miss the local food back home! 💡 I decided to explore the variety of food choices in Honolulu and build a restaurant recommender so that you or I could easily find restaurants that suit our tastes or cravings for the next time we visit Honolulu. 🤙🏽 Mahalo for checking out this project! 🌴
+<p>Aloha! 🌺  I am originally from Honolulu, so I grew up with the cuisines of Hawai'i. 🍽  Now, I am in the SF Bay Area for opportunities in tech & Data Science, but I still miss the local food back home! 💡  I decided to explore the variety of food choices in Honolulu and build a restaurant recommender so that you or I could easily find restaurants that suit our tastes or cravings for the next time we visit Honolulu. 🤙🏽  Mahalo for checking out this project! 🌴</p>
 
 ### Web Scraping
 
@@ -95,4 +95,4 @@ I used <b>BeautifulSoup4</b> and <b>MongoDB (PyMongo)</b> to scrape and store da
 
 ___
 
-## [[Back to Top]](#Back-to-Top)
+## [[Back to Top]](#Honolulu-Eats-Recommender)
