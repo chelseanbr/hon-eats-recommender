@@ -82,11 +82,12 @@ I used <b>BeautifulSoup4</b> and <b>MongoDB</b> to scrape and store data from Tr
 │   └── web_scraping_flowchart.png
 ├── saving_from_mongodb.ipynb
 └── src
+    ├── prepare_data.py
     ├── save_all_page_links.py
     ├── save_dataframe.py
     └── scrape_reviews.py
 
-3 directories, 10 files
+3 directories, 12 files
 ```
 
 ### Steps

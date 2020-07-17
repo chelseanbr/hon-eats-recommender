@@ -9,6 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 
 def get_curr_page_info(soup):
+    """Return list of info selected from current page"""
     # restaurant_name
     restaurant_name = soup.find("h1", {"class": "header heading masthead masthead_h1"}).getText()
     print(restaurant_name) #<-debug
@@ -40,25 +41,46 @@ def get_curr_page_info(soup):
     except AttributeError:
         about = np.nan
 
-    # tag_categories
+    # check main tags for restaurant details
     tag_cats = main_details.findAll("div", {"class": "o3o2Iihq"})
-    tag_cats = [tag_cat.getText() for tag_cat in tag_cats]
-    tag_cats = ' | '.join(tag_cats)
-    # tags
-    tags = main_details.findAll("div", {"class": "_2170bBgV"})
-    tags = [tag.getText() for tag in tags]
-    tags = ' | '.join(tags)
-    
-    # more details
-    more_details = soup.find("div", {"id": "taplc_detail_overview_cards_0"})
-    # more_details categories
-    more_details_cats = more_details.findAll("div", {"class": "_14zKtJkz"})
-    more_details_cats = [more_details_cat.getText() for more_details_cat in more_details_cats]
-    more_details_cats = ' | '.join(more_details_cats)
-    # more_details
-    more_details = more_details.findAll("div", {"class": "_1XLfiSsv"})
-    more_details = [more_detail.getText() for more_detail in more_details]
-    more_details = ' | '.join(more_details)
+    if len(tag_cats) == 0:
+        # get details from another section
+        details = soup.find("div", {"id": "taplc_detail_overview_cards_0"})
+        # get detail categories
+        detail_cats = details.findAll("div", {"class": "_14zKtJkz"})
+        detail_cats = [detail_cat.getText() for detail_cat in detail_cats]
+        details = details.findAll("div", {"class": "_1XLfiSsv"})
+        details = [detail.getText() for detail in details]
+    else:
+        # proceed to get tags and their categories
+        tag_cats = [tag_cat.getText() for tag_cat in tag_cats]
+        details = main_details.findAll("div", {"class": "_2170bBgV"})
+        details = [detail.getText() for detail in details]
+        detail_cats = tag_cats
+
+    details_dict = dict(zip(detail_cats, details))
+
+    # populate detail fields
+    try:
+        price = details_dict['PRICE RANGE']
+    except KeyError:
+        price = np.nan
+    try:
+        diets = details_dict['Special Diets']
+    except KeyError:
+        diets = np.nan
+    try:
+        meals = details_dict['Meals']
+    except KeyError:
+        meals = np.nan
+    try: 
+        cuisines = details_dict['CUISINES']
+    except KeyError:
+        cuisines = np.nan
+    try:
+        features = details_dict['FEATURES']
+    except KeyError:
+        features = np.nan
 
     
     # overall_rating
@@ -156,12 +178,13 @@ def get_curr_page_info(soup):
             curr_review['review_contents'] = np.nan
         review_data.append(curr_review)
 
-    return [restaurant_name, description, url, top_details, about, tag_cats, tags, 
-            more_details_cats, more_details, 
+    return [restaurant_name, description, url, top_details, about, price, diets, 
+            meals, cuisines, features,
             overall_rating, food_rating, service_rating, value_rating, atmosphere_rating, 
             num_reviews, ranking, address, location, image_url, review_data]
 
 if __name__ == "__main__":
+    # Connect to MongoDB database
     print('Connecting to database...')
     client = MongoClient('localhost', 27017)
     db = client.tripadvisor_hon_eats_reviews
@@ -184,9 +207,8 @@ if __name__ == "__main__":
         
     info_df = pd.DataFrame(np.array(info),
                     columns=['restaurant_name', 'description', 'url', 'top_details', 'about', 
-                            'tag_cats', 
-                            'tags', 'more_details_cats', 
-                            'more_details', 'overall_rating', 'food_rating', 
+                            'price', 'diets', 
+                            'meals', 'cuisines', 'features', 'overall_rating', 'food_rating', 
                             'service_rating', 
                             'value_rating', 'atmosphere_rating', 'num_reviews', 'ranking', 
                             'address', 'location', 'image_url', 'review_data'])
