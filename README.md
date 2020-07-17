@@ -30,15 +30,15 @@
 ![honolulu-page-top](/imgs/honolulu-page-top.png)
 ![honolulu-page-bot](/imgs/honolulu-page-bot.png)
 
-I used <b>BeautifulSoup4</b> and <b>MongoDB (PyMongo)</b> to scrape and store data from <b>Tripadvisor</b> on <b><u>1,805</u> restaurants in Honolulu, Hawai'i</b> on <u>06/25/2020</u>. *This was done overnight with the help of an AWS EC2 instance.* Then, I parsed and converted the <b>unstructured text data (<u>15,903</u> documents)</b> from my MongoDB database into a structured json format (hon_eats_data.json --> [hon_eats_data.zip](/data/hon_eats_data.zip)) for use as a DataFrame with 20 columns (15,903 rows).
+I used <b>BeautifulSoup4</b> and <b>MongoDB</b> to scrape and store data from Tripadvisor on <b>1,805 restaurants in Honolulu, Hawai'i</b> on *06/25/2020. This was done overnight with an AWS EC2 instance.* Then, I parsed and converted <b>15,903 documents of unstructured text data</b> from my MongoDB database into structured DataFrame and json formats (hon_eats_data.json --> [hon_eats_data.zip](/data/hon_eats_data.zip)).
 
 #### Pipeline
 ![web_scraping_flowchart](/imgs/web_scraping_flowchart.png)
 
 1. [save_all_page_links.py](/src/save_all_page_links.py) scrapes all pages of <a href='https://www.tripadvisor.com/Restaurants-g60982-Honolulu_Oahu_Hawaii.html'>Tripadvisor Restaurants in Honolulu</a> to save all result links to [csv](/data/all_links.csv).
-2. [scrape_reviews.py](/src/scrape_reviews.py) takes a csv with Tripadvisor restaurant links and scrapes/stores all review pages per link in MongoDB.
-3. [save_dataframe.py](/src/save_dataframe.py) parses unstructured data in MongoDB to save to DataFrame/json.
-* [saving_from_mongodb.ipynb](/saving_from_mongodb.ipynb) shows how I connected to MongoDB and parsed/saved data to a DataFrame.
+2. [scrape_reviews.py](/src/scrape_reviews.py) takes a csv with Tripadvisor restaurant links. It scrapes and stores all review pages per link into MongoDB.
+3. [save_dataframe.py](/src/save_dataframe.py) parses data in MongoDB to save to DataFrame/json.
+* [saving_from_mongodb.ipynb](/saving_from_mongodb.ipynb) shows how I parsed and saved data from MongoDB to a DataFrame.
 
 ## EDA
 
@@ -90,7 +90,7 @@ I used <b>BeautifulSoup4</b> and <b>MongoDB (PyMongo)</b> to scrape and store da
 ```
 
 ### Steps
-1. [Web Scraping](#Web-Scraping)
+1. [Web Scraping](#Pipeline)
 
 
 ___
